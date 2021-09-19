@@ -5,33 +5,46 @@ const Minesweeper = () => {
     let board;
     let cols;
     let rows;
+    let mines;
+    let isFirstMove;
+    let isStarted = false;
 
-    /*
-    '0'-'8': Revealed, x bombs adjacent
-    ' '    : Unrevealed
-    '*'    : Unrevealed mine
-    '='    : Flagged
-    '#'    : Flagged mine
-    */
+    // for displaying to the player
+    let displayedMinesRemaining;
 
-    function initializeArray2D(cols, rows) {
-        let array = new Array(cols);
+    // for game logic
+    let minesRemaining;
+
+    function startGame(_cols, _rows, _mines) {
+        board = initializeArray2D(_cols, _rows);
+        cols = _cols;
+        rows = _rows;
+        mines = _mines;
+        displayedMinesRemaining = _mines;
+        minesRemaining = _mines;
+        isFirstMove = true;
+        isStarted = true;
+    }
+
+    function initializeArray2D(_cols, _rows) {
+        let array = new Array(_cols);
         for (let x = 0; x < array.length; x++) {
-            array[x] = new Array(rows);
-            for (let y = 0; y < array[i].length; y++) {
+            array[x] = new Array(_rows);
+            for (let y = 0; y < array[x].length; y++) {
                 array[x][y] = ' ';
             }
         }
         return array;
     }
 
-    function placeMines(cols, rows, mines) {
+    function placeMines(exceptX, exceptY) {
         for (let i = 0; i < mines; i++) {
             let placed = false;
             do {
                 let x = getRandomInt(cols);
                 let y = getRandomInt(rows);
-                if (board[x][y] !== '*') {
+                if (x === exceptX && y === exceptY) continue;
+                if (board[x][y] !== '*' && board) {
                     board[x][y] = '*';
                     placed = true;
                 }
@@ -43,7 +56,23 @@ const Minesweeper = () => {
         return Math.floor(Math.random() * max);
     }
 
+    /*
+    '0'-'8': Revealed, x bombs adjacent
+    ' '    : Unrevealed
+    '*'    : Unrevealed mine
+    '='    : Flagged
+    '#'    : Flagged mine
+    */
+
     function onClick(x, y) {
+        if (!isStarted) return;
+        if (!isInbounds(x, y)) return;
+        if (isFirstMove) {
+            placeMines(x, y);
+            //TODO: Start timer
+            isFirstMove = false;
+        }
+
         switch(board[x][y]) {
             case ' ':
                 reveal(x, y);
@@ -52,6 +81,35 @@ const Minesweeper = () => {
                 gameOver(x, y);
                 break;
             default:
+                break;
+        }
+    }
+
+    function onFlag(x, y) {
+        if (!isStarted) return;
+        if (!isInbounds) return;
+
+        switch(board[x][y]) {
+            case '=': //flagged
+                board[x][y] = ' ';
+                displayedMinesRemaining++;
+                break;
+            case '#': //flagged mine
+                board[x][y] = '*';
+                displayedMinesRemaining++;
+                minesRemaining++;
+                break;
+            case '*': //mine
+                board[x][y] = '#';
+                displayedMinesRemaining--;
+                minesRemaining--;
+                break;
+            case ' ': //unrevealed
+                board[x][y] = '=';
+                displayedMinesRemaining--;
+                break;
+            default:
+                //already revealed, do nothing
                 break;
         }
     }
@@ -92,6 +150,10 @@ const Minesweeper = () => {
 
     function hasMine(x, y) {
         return isInbounds(x-1, y-1) && board[x][y] === '*';
+    }
+
+    function gameOver() {
+        //TODO
     }
 
     return (
