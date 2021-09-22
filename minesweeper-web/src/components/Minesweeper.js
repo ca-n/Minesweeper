@@ -6,8 +6,15 @@ const Minesweeper = () => {
     let cols;
     let rows;
     let mines;
-    let isFirstMove;
-    let isStarted = false;
+
+    /*
+    -2: Loss
+    -1: Win
+     0: Pregame
+     1: First move
+     2: In game
+    */
+    let state = 0;
 
     // for displaying to the player
     let displayedMinesRemaining;
@@ -22,8 +29,8 @@ const Minesweeper = () => {
         mines = _mines;
         displayedMinesRemaining = _mines;
         minesRemaining = _mines;
-        isFirstMove = true;
-        isStarted = true;
+        // state = first move
+        state = 1;
     }
 
     function initializeArray2D(_cols, _rows) {
@@ -65,12 +72,14 @@ const Minesweeper = () => {
     */
 
     function onClick(x, y) {
-        if (!isStarted) return;
+        if (!isStarted()) return;
         if (!isInbounds(x, y)) return;
-        if (isFirstMove) {
+        // if it is the first move
+        if (state === 1) {
             placeMines(x, y);
             //TODO: Start timer
-            isFirstMove = false;
+            // state = in game
+            state = 2;
         }
 
         switch(board[x][y]) {
@@ -78,7 +87,7 @@ const Minesweeper = () => {
                 reveal(x, y);
                 break;
             case '*':
-                gameOver(x, y);
+                gameLost(x, y);
                 break;
             default:
                 break;
@@ -86,7 +95,7 @@ const Minesweeper = () => {
     }
 
     function onFlag(x, y) {
-        if (!isStarted) return;
+        if (!isStarted()) return;
         if (!isInbounds) return;
 
         switch(board[x][y]) {
@@ -112,6 +121,7 @@ const Minesweeper = () => {
                 //already revealed, do nothing
                 break;
         }
+        if (minesRemaining === 0) gameWon();
     }
 
     function reveal(x, y) {
@@ -152,8 +162,20 @@ const Minesweeper = () => {
         return isInbounds(x-1, y-1) && board[x][y] === '*';
     }
 
-    function gameOver() {
-        //TODO
+    function isStarted() {
+        return (state !== 1 && state !== 2);
+    }
+
+    function gameLost(x, y) {
+        //TODO: stop timer
+        // state = loss
+        state = -2;
+    }
+
+    function gameWon() {
+        //TODO: stop timer
+        // state = win
+        state = -1;
     }
 
     return (
