@@ -6,8 +6,7 @@ const Flag = ({x, y, onFlag}) => {
         <Button inner={'='}
                 foreground={'black'}
                 background={'lightgray'}
-                onLeftClick={() => {}}
-                onRightClick={onFlag(x, y)} />
+                onRightClick={onFlag} />
     )
 }
 

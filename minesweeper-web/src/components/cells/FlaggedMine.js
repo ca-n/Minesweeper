@@ -5,9 +5,7 @@ const FlaggedMine = () => {
     return (
         <Button inner={'#'}
                 foreground={'black'}
-                background={'green'}
-                onLeftClick={() => {}}
-                onRightClick={() => {}} />
+                background={'green'} />
     )
 }
 

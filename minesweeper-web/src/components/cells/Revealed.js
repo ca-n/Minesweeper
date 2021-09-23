@@ -27,7 +27,7 @@ const Revealed = ({adjacentMines}) => {
             color = 'black';
             break;
         case '8':
-            color = 'gray';
+            color = 'dimgray';
             break;
         default:
             break;
@@ -36,9 +36,7 @@ const Revealed = ({adjacentMines}) => {
     return (
         <Button inner={adjacentMines}
                 foreground={color}
-                background={'lightgray'}
-                onLeftClick={() => {}}
-                onRightClick={() => {}}
+                background={'silver'}
                 inset={true}/>
     )
 }

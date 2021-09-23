@@ -6,8 +6,6 @@ const Mine = () => {
         <Button inner={'*'}
                 foreground={'black'}
                 background={'red'}
-                onLeftClick={() => {}}
-                onRightClick={() => {}}
                 inset={true}/>
     )
 }
