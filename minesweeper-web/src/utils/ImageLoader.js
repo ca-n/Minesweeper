@@ -1,8 +1,8 @@
 const images = {
-    mine: require('path_to_mine_image.png'),
-    flag: require('path_to_flag_image.png'),
-    flaggedMine: require('wjateven'),
-    notFount: require('askdlkads')
+    mine: require('../logo.svg'),
+    flag: require('../logo.svg'),
+    flaggedMine: require('../logo.svg'),
+    notFount: require('../logo.svg')
 };
 
 export function loadImage(name) {
