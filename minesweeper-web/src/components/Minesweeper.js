@@ -1,4 +1,5 @@
 import React from 'react'
+import Board from "./Board";
 
 const Minesweeper = () => {
 
@@ -29,7 +30,6 @@ const Minesweeper = () => {
         mines = _mines;
         displayedMinesRemaining = _mines;
         minesRemaining = _mines;
-        // state = first move
         state = 1;
     }
 
@@ -51,7 +51,7 @@ const Minesweeper = () => {
                 let x = getRandomInt(cols);
                 let y = getRandomInt(rows);
                 if (x === exceptX && y === exceptY) continue;
-                if (board[x][y] !== '*' && board) {
+                if (board[x][y] !== '*') {
                     board[x][y] = '*';
                     placed = true;
                 }
@@ -74,6 +74,7 @@ const Minesweeper = () => {
     function onClick(x, y) {
         if (!isStarted()) return;
         if (!isInbounds(x, y)) return;
+        console.log(`Click! onClick(${x}, ${y})`)
         // if it is the first move
         if (state === 1) {
             placeMines(x, y);
@@ -92,11 +93,14 @@ const Minesweeper = () => {
             default:
                 break;
         }
+
+        console.log(board);
     }
 
     function onFlag(x, y) {
         if (!isStarted()) return;
         if (!isInbounds) return;
+        console.log(`Flag! onFlag(${x}, ${y})`);
 
         switch(board[x][y]) {
             case '=': //flagged
@@ -126,11 +130,13 @@ const Minesweeper = () => {
 
     function reveal(x, y) {
         if (!isInbounds(x, y)) return;
+        if (isRevealed(x, y)) return;
+        console.log(`reveal(${x}, ${y}) '${board[x][y]}'`);
         let n = countAdjacentMines(x, y);
+        board[x][y] = n.toString();
         if (n === 0) {
             revealAdjacent(x, y);
         }
-        board[x][y] = n.toString();
     }
 
     function countAdjacentMines(x, y) {
@@ -154,16 +160,23 @@ const Minesweeper = () => {
         }
     }
 
+    function isRevealed(x, y) {
+        let c = board[x][y];
+        return (c >= '0' && c <= '8');
+    }
+
     function isInbounds(x, y) {
         return (0 <= x) && (x < cols) && (0 <= y) && (y < rows);
     }
 
     function hasMine(x, y) {
-        return isInbounds(x-1, y-1) && board[x][y] === '*';
+        if (!isInbounds(x, y)) return false;
+        let c = board[x][y];
+        return (c === '*' || c === '#');
     }
 
     function isStarted() {
-        return (state !== 1 && state !== 2);
+        return (state > 0);
     }
 
     function gameLost(x, y) {
@@ -178,10 +191,15 @@ const Minesweeper = () => {
         state = -1;
     }
 
+    startGame(10, 10, 20);
+
     return (
-        <div>
-            
-        </div>
+        <Board board={board}
+               cols={cols}
+               rows={rows}
+               state={state}
+               onClick={onClick}
+               onFlag={onFlag} />
     )
 }
 
