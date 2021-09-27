@@ -11,8 +11,7 @@ const Empty = ({x, y, onClick, onFlag}) => {
     }
 
     return (
-        <Button inner={' '}
-                foreground={'black'}
+        <Button image={'none'}
                 background={'lightgray'}
                 onLeftClick={onLeftClick}
                 onRightClick={onRightClick} />

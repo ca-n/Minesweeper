@@ -2,40 +2,39 @@ import React from 'react'
 import Button from "../Button";
 const Revealed = ({adjacentMines}) => {
 
-    let color;
+    let image;
 
     switch (adjacentMines) {
         case '1':
-            color = 'blue';
+            image = 'one';
             break;
         case '2':
-            color = 'green';
+            image = 'two';
             break;
         case '3':
-            color = 'red';
+            image = 'three';
             break;
         case '4':
-            color = 'purple';
+            image = 'four';
             break;
         case '5':
-            color = 'maroon';
+            image = 'five';
             break;
         case '6':
-            color = 'turquoise';
+            image = 'six';
             break;
         case '7':
-            color = 'black';
+            image = 'seven';
             break;
         case '8':
-            color = 'dimgray';
+            image = 'eight';
             break;
         default:
             break;
     }
 
     return (
-        <Button inner={adjacentMines}
-                foreground={color}
+        <Button image={image}
                 background={'silver'}
                 inset={true}/>
     )
