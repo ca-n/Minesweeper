@@ -1,6 +1,6 @@
 import React from 'react'
 import Mine from "./cells/Mine";
-import FlaggedMine from "./cells/FlaggedMine";
+import NoMine from "./cells/NoMine";
 import Flag from "./cells/Flag";
 import Revealed from "./cells/Revealed";
 import Empty from "./cells/Empty";
@@ -38,27 +38,20 @@ const Board = ({board, cols, rows, state, onClick, onFlag}) => {
         console.log(`getCell(${x}, ${y})`);
         let c = board[x][y];
         switch (c) {
-            // mine
             case '*':
-                // if the game is over, show mines
                 if (state < 0) return (<Mine />);
-                // else, do not show
                 break;
-            // flagged mine
-            case '#':
-                // if the game is over, show flagged mines
-                if (state < 0) return (<FlaggedMine />);
-                // else, show regular flag
-            // flag
-            // eslint-disable-next-line no-fallthrough
             case '=':
+                if (state < 0) return (<NoMine />);
+            // flagnext-line no-fallthrough
+            case '#':
                 return (<Flag x={x} y={y} onFlag={onFlag} />);
             default:
                 if (isNumber(c)) {
                     return (<Revealed adjacentMines={c} />);
                 }
-                return (<Empty x={x} y={y} onClick={onClick} onFlag={onFlag} />);
         }
+        return (<Empty x={x} y={y} onClick={onClick} onFlag={onFlag} />);
     }
 
     function isNumber(c) {
