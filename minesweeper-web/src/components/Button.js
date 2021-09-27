@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Button = ({inner=' ', foreground, background, onLeftClick=(() => {}), onRightClick=(() => {}), inset=false}) => {
+const Button = ({content=' ', foreground, background, onLeftClick=(() => {}), onRightClick=(() => {}), inset=false}) => {
     function onClick(e) {
         e.preventDefault();
         onLeftClick();
@@ -21,7 +21,7 @@ const Button = ({inner=' ', foreground, background, onLeftClick=(() => {}), onRi
                     width:'30px',
                     textAlign:'center'}}
                 onClick={onClick}
-                onContextMenu={onContextMenu}><pre style={{margin:'0'}}>{inner}</pre></button>
+                onContextMenu={onContextMenu}><pre style={{margin:'0'}}>{content}</pre></button>
     );
 }
 
