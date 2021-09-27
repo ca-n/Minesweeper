@@ -7,12 +7,18 @@ import Empty from "./cells/Empty";
 
 const Board = ({board, cols, rows, state, onClick, onFlag}) => {
     const array = new Array(rows);
-    for (let row = 0; row < rows; row++) {
-        array[row] = new Array(cols);
-        for (let col = 0; col < cols; col++) {
-            array[row][col] = getCell(col, row);
+    fillArray();
+
+    function fillArray() {
+        for (let row = 0; row < rows; row++) {
+            array[row] = new Array(cols);
+            for (let col = 0; col < cols; col++) {
+                array[row][col] = getCell(col, row);
+            }
         }
     }
+
+    
 
     /* STATES
         -2: Loss
@@ -44,6 +50,7 @@ const Board = ({board, cols, rows, state, onClick, onFlag}) => {
                 if (state < 0) return (<FlaggedMine />);
                 // else, show regular flag
             // flag
+            // eslint-disable-next-line no-fallthrough
             case '=':
                 return (<Flag x={x} y={y} onFlag={onFlag} />);
             default:
@@ -60,19 +67,19 @@ const Board = ({board, cols, rows, state, onClick, onFlag}) => {
 
     return (
         <div>
-            {array.map((col, y) => {
-                return (
-                    <table cellSpacing={'0'}>
-                        <tbody>
+            <table cellSpacing={'0'}>
+                <tbody>
+                    {array.map((col, y) => {
+                        return (
                             <tr>
                                 {col.map((cell, x) => {
-                                    return <td style={{padding:'0', margin:'0'}}>{cell}</td>
+                                    return <td style={{padding:'0', margin:'0'}} key={'x'+x+'y'+y}>{cell}</td>
                                 })}
                             </tr>
-                        </tbody>
-                    </table>
-                )
-            })}
+                        )
+                    })}
+                </tbody>
+            </table>
         </div>
     )
 }
