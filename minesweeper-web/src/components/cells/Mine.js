@@ -3,7 +3,7 @@ import React from 'react'
 import Button from "../Button";
 const Mine = () => {
     return (
-        <Button inner={'*'}
+        <Button image={'mine'}
                 background={'silver'}
                 inset={true}/>
     )
