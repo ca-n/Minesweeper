@@ -1,6 +1,7 @@
 import React from 'react'
+import { loadImage } from '../utils/ImageLoader';
 
-const Button = ({content=' ', foreground, background, onLeftClick=(() => {}), onRightClick=(() => {}), inset=false}) => {
+const Button = ({image='none', background, onLeftClick=(() => {}), onRightClick=(() => {}), inset=false}) => {
     function onClick(e) {
         e.preventDefault();
         onLeftClick();
@@ -12,16 +13,16 @@ const Button = ({content=' ', foreground, background, onLeftClick=(() => {}), on
     }
 
     return (
+
         <button type={'button'}
-                style={{color:foreground,
-                    backgroundColor:background,
+                style={{backgroundColor:background,
                     fontWeight:'bold',
                     borderStyle:`${inset ? 'inset' : 'outset'}`,
                     height:'30px',
                     width:'30px',
                     textAlign:'center'}}
                 onClick={onClick}
-                onContextMenu={onContextMenu}><pre style={{margin:'0'}}>{content}</pre></button>
+                onContextMenu={onContextMenu}><img alt={image} src={loadImage(image)} /></button>
     );
 }
 
