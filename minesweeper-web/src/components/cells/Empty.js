@@ -2,11 +2,11 @@ import React from 'react'
 import Button from "../Button";
 const Empty = ({x, y, onClick, onFlag}) => {
 
-    function onLeftClick() {
+    const onLeftClick = () => {
         onClick(x, y);
     }
 
-    function onRightClick(){
+    const onRightClick = () => {
         onFlag(x, y);
     }
 
