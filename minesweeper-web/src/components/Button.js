@@ -2,12 +2,12 @@ import React from 'react'
 import { loadImage } from '../utils/ImageLoader';
 
 const Button = ({image='none', background, onLeftClick=(() => {}), onRightClick=(() => {}), inset=false}) => {
-    function onClick(e) {
+    const onClick = (e) => {
         e.preventDefault();
         onLeftClick();
     }
 
-    function onContextMenu(e) {
+    const onContextMenu = (e) => {
         e.preventDefault();
         onRightClick();
     }
