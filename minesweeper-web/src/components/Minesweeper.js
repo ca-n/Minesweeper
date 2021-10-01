@@ -1,42 +1,14 @@
 import React from 'react'
+import {useState} from "react";
 import Board from "./Board";
 
-const Minesweeper = () => {
+const Minesweeper = ({cols, rows, mines}) => {
 
-    let board;
-    let cols;
-    let rows;
-    let mines;
-
-    /*
-    -2: Loss
-    -1: Win
-     0: Pregame
-     1: First move
-     2: In game
-    */
-    let state = 0;
-
-    // for displaying to the player
-    let displayedMinesRemaining;
-
-    // for game logic
-    let minesRemaining;
-
-    function startGame(_cols, _rows, _mines) {
-        board = initializeArray2D(_cols, _rows);
-        cols = _cols;
-        rows = _rows;
-        mines = _mines;
-        displayedMinesRemaining = _mines;
-        minesRemaining = _mines;
-        state = 1;
-    }
-
-    function initializeArray2D(_cols, _rows) {
-        let array = new Array(_cols);
+    const initializeArray2D = (cols, rows) => {
+        console.log("initializeArray2D");
+        let array = new Array(cols);
         for (let x = 0; x < array.length; x++) {
-            array[x] = new Array(_rows);
+            array[x] = new Array(rows);
             for (let y = 0; y < array[x].length; y++) {
                 array[x][y] = ' ';
             }
@@ -44,22 +16,23 @@ const Minesweeper = () => {
         return array;
     }
 
-    function placeMines(exceptX, exceptY) {
+    const placeMines = (exceptX, exceptY) => {
+        console.log("placeMines")
         for (let i = 0; i < mines; i++) {
             let placed = false;
             do {
                 let x = getRandomInt(cols);
                 let y = getRandomInt(rows);
                 if (x === exceptX && y === exceptY) continue;
-                if (board[x][y] !== '*') {
-                    board[x][y] = '*';
+                if (gameState.board[x][y] !== '*') {
+                    setCell(x, y, '*');
                     placed = true;
                 }
             } while(!placed);
         }
     }
 
-    function getRandomInt(max) {
+    const getRandomInt = (max) => {
         return Math.floor(Math.random() * max);
     }
 
@@ -71,19 +44,20 @@ const Minesweeper = () => {
     '#'    : Flagged mine
     */
 
-    function onClick(x, y) {
+    const onClick = (x, y) => {
         if (!isStarted()) return;
         if (!isInbounds(x, y)) return;
-        console.log(`Click! onClick(${x}, ${y})`)
+        console.log(`Click! onClick(${x}, ${y}) state: ${gameState.state}`)
         // if it is the first move
-        if (state === 1) {
+        if (gameState.state === 0) {
             placeMines(x, y);
             //TODO: Start timer
             // state = in game
-            state = 2;
+            setState(1);
+            console.log(`state set to 1, actual state: ${gameState.state}`);
         }
 
-        switch(board[x][y]) {
+        switch(gameState.board[x][y]) {
             case ' ':
                 reveal(x, y);
                 break;
@@ -93,53 +67,50 @@ const Minesweeper = () => {
             default:
                 break;
         }
-
-        console.log(board);
+        if (gameState.emptyRemaining === 0) gameWon();
     }
 
-    function onFlag(x, y) {
+    const onFlag = (x, y) => {
         if (!isStarted()) return;
         if (!isInbounds) return;
         console.log(`Flag! onFlag(${x}, ${y})`);
 
-        switch(board[x][y]) {
+        switch(gameState.board[x][y]) {
             case '=': //flagged
-                board[x][y] = ' ';
-                displayedMinesRemaining++;
+                setCell(x, y, ' ');
+                updateMinesRemaining(1);
                 break;
             case '#': //flagged mine
-                board[x][y] = '*';
-                displayedMinesRemaining++;
-                minesRemaining++;
+                setCell(x, y, '*');
+                updateMinesRemaining(1);
                 break;
             case '*': //mine
-                board[x][y] = '#';
-                displayedMinesRemaining--;
-                minesRemaining--;
+                setCell(x, y, '#');
+                updateMinesRemaining(-1);
                 break;
             case ' ': //unrevealed
-                board[x][y] = '=';
-                displayedMinesRemaining--;
+                setCell(x, y, '=');
+                updateMinesRemaining(-1);
                 break;
             default:
                 //already revealed, do nothing
                 break;
         }
-        if (minesRemaining === 0) gameWon();
     }
 
-    function reveal(x, y) {
+    const reveal = (x, y) => {
         if (!isInbounds(x, y)) return;
         if (isRevealed(x, y)) return;
-        console.log(`reveal(${x}, ${y}) '${board[x][y]}'`);
         let n = countAdjacentMines(x, y);
-        board[x][y] = n.toString();
+        setCell(x, y, n.toString());
+        decrementEmptyRemaining();
         if (n === 0) {
             revealAdjacent(x, y);
         }
+        console.log(`reveal(${x}, ${y}) ${gameState.board[x][y]}`);
     }
 
-    function countAdjacentMines(x, y) {
+    const countAdjacentMines = (x, y) => {
         if (!isInbounds(x, y)) return;
         let n = 0;
         for (let col = x-1; col <= x+1; col++) {
@@ -150,54 +121,130 @@ const Minesweeper = () => {
         return n;
     }
 
-    function revealAdjacent(x, y) {
+    const revealAdjacent = (x, y) => {
         if (!isInbounds(x, y)) return;
         for (let col = x-1; col <= x+1; col++) {
             for (let row = y-1; row <= y+1; row++) {
-                if (col === x && row === y) continue;
                 reveal(col, row);
             }
         }
     }
 
-    function isRevealed(x, y) {
-        let c = board[x][y];
+    const isRevealed = (x, y) => {
+        let c = gameState.board[x][y];
         return (c >= '0' && c <= '8');
     }
 
-    function isInbounds(x, y) {
+    const isInbounds = (x, y) => {
         return (0 <= x) && (x < cols) && (0 <= y) && (y < rows);
     }
 
-    function hasMine(x, y) {
+    const hasMine = (x, y) => {
         if (!isInbounds(x, y)) return false;
-        let c = board[x][y];
+        let c = gameState.board[x][y];
         return (c === '*' || c === '#');
     }
 
-    function isStarted() {
-        return (state > 0);
+    const isStarted = () => {
+        return (gameState.state >= 0);
     }
 
-    function gameLost(x, y) {
+    const gameLost = (x, y) => {
         //TODO: stop timer
         // state = loss
-        state = -2;
+        updateGameStateLost(x, y);
     }
 
-    function gameWon() {
+    const updateGameStateLost = (x, y) => {
+        let updatedBoard = gameState.board;
+        updatedBoard[x][y] = '%';
+        setGameState(last => ({
+            board: updatedBoard,
+            cols: last.cols,
+            rows: last.rows,
+            state: -2,
+            minesRemaining: last.minesRemaining,
+            emptyRemaining: last.emptyRemaining
+        }));
+    }
+
+    const gameWon = () => {
         //TODO: stop timer
         // state = win
-        state = -1;
+        setState(-1);
     }
 
-    startGame(10, 10, 20);
+    const setCell = (x, y, c) => {
+        let updated = gameState.board;
+        updated[x][y] = c;
+
+        setBoard(updated);
+    }
+
+    const setState = (state) => {
+        setGameState(last => ({
+            board: last.board,
+            cols: last.cols,
+            rows: last.rows,
+            state: state,
+            minesRemaining: last.minesRemaining,
+            emptyRemaining: last.emptyRemaining
+        }));
+    }
+
+    const updateMinesRemaining = (change) => {
+        setGameState(last => ({
+            board: last.board,
+            cols: last.cols,
+            rows: last.rows,
+            state: last.state,
+            minesRemaining: last.minesRemaining + change,
+            emptyRemaining: last.emptyRemaining
+        }));
+    }
+
+    const decrementEmptyRemaining = () => {
+        setGameState(last => ({
+            board: last.board,
+            cols: last.cols,
+            rows: last.rows,
+            state: last.state,
+            minesRemaining: last.minesRemaining,
+            emptyRemaining: last.emptyRemaining - 1
+        }));
+    }
+
+    const setBoard = (board) => {
+        setGameState(last => ({
+            board: board,
+            cols: last.cols,
+            rows: last.rows,
+            state: last.state,
+            minesRemaining: last.minesRemaining,
+            emptyRemaining: last.emptyRemaining
+        }));
+    }
+
+    /*
+    gameState.state legend
+    -2: Loss
+    -1: Win
+     0: Pregame (First move)
+     1: In game
+    */
+    const [gameState, setGameState] = useState(
+        {
+            board: initializeArray2D(cols, rows),
+            cols: cols,
+            rows: rows,
+            state: 0,
+            minesRemaining: mines,
+            emptyRemaining: (cols * rows) - mines
+        }
+    )
 
     return (
-        <Board board={board}
-               cols={cols}
-               rows={rows}
-               state={state}
+        <Board gameState={gameState}
                onClick={onClick}
                onFlag={onFlag} />
     )
