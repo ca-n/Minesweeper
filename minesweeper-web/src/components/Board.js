@@ -5,20 +5,23 @@ import Flag from "./cells/Flag";
 import Revealed from "./cells/Revealed";
 import Empty from "./cells/Empty";
 
-const Board = ({board, cols, rows, state, onClick, onFlag}) => {
-    const array = new Array(rows);
-    fillArray();
-
-    function fillArray() {
-        for (let row = 0; row < rows; row++) {
-            array[row] = new Array(cols);
-            for (let col = 0; col < cols; col++) {
-                array[row][col] = getCell(col, row);
+const Board = ({gameState, onClick, onFlag}) => {
+    const generateTable = () => {
+        console.log("generateTable(), state=" + JSON.stringify(gameState));
+        let table = [];
+        for (let y = 0; y < gameState.rows; y++) {
+            let row = [];
+            for (let x = 0; x < gameState.cols; x++) {
+                row.push(
+                    <td style={{padding:'0', margin:'0'}} key={`${x}-${y}`}>
+                        {getCell(x, y)}
+                    </td>
+                );
             }
+            table.push(<tr key={y} style={{padding:'0', margin:'0'}}>{row}</tr>);
         }
+        return table;
     }
-
-    
 
     /* STATES
         -2: Loss
@@ -34,18 +37,19 @@ const Board = ({board, cols, rows, state, onClick, onFlag}) => {
         '='    : Flagged
         '#'    : Flagged mine
     */
-    function getCell(x, y) {
-        console.log(`getCell(${x}, ${y})`);
-        let c = board[x][y];
+    const getCell = (x, y) => {
+        let c = gameState.board[x][y];
         switch (c) {
             case '*':
-                if (state < 0) return (<Mine />);
+                if (gameState.state < 0) return (<Mine />);
                 break;
             case '=':
-                if (state < 0) return (<NoMine />);
+                if (gameState.state < 0) return (<NoMine />);
             // flagnext-line no-fallthrough
             case '#':
                 return (<Flag x={x} y={y} onFlag={onFlag} />);
+            case '%':
+                return (<Mine clicked={true} />);
             default:
                 if (isNumber(c)) {
                     return (<Revealed adjacentMines={c} />);
@@ -54,24 +58,14 @@ const Board = ({board, cols, rows, state, onClick, onFlag}) => {
         return (<Empty x={x} y={y} onClick={onClick} onFlag={onFlag} />);
     }
 
-    function isNumber(c) {
+    const isNumber = (c) => {
         return (c >= '0' && c <= '8');
     }
 
     return (
         <div>
             <table cellSpacing={'0'}>
-                <tbody>
-                    {array.map((col, y) => {
-                        return (
-                            <tr>
-                                {col.map((cell, x) => {
-                                    return <td style={{padding:'0', margin:'0'}} key={'x'+x+'y'+y}>{cell}</td>
-                                })}
-                            </tr>
-                        )
-                    })}
-                </tbody>
+                <tbody style={{margin: '0', padding: '0'}}>{generateTable()}</tbody>
             </table>
         </div>
     )
