@@ -41,7 +41,8 @@ const Board = ({gameState, onClick, onFlag}) => {
         let c = gameState.board[x][y];
         switch (c) {
             case '*':
-                if (gameState.state < 0) return (<Mine />);
+                if (gameState.state === -1) return (<Flag />);
+                if (gameState.state === -2) return (<Mine />);
                 break;
             case '=':
                 if (gameState.state < 0) return (<NoMine />);
