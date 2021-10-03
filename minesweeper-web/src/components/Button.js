@@ -16,8 +16,8 @@ const Button = ({image='none', background, onLeftClick=(() => {}), onRightClick=
         <button type={'button'}
                 style={{backgroundColor:background,
                     borderStyle:`${inset ? 'inset' : 'outset'}`,
-                    height:'30px',
-                    width:'30px',
+                    height:'32px',
+                    width:'32px',
                     textAlign:'center',
                     margin: '0',
                     padding: '0'}}
@@ -28,8 +28,11 @@ const Button = ({image='none', background, onLeftClick=(() => {}), onRightClick=
                     padding: '0',
                     height: '100%',
                     width: '100%',
+                        // eslint-disable-next-line no-dupe-keys
                     imageRendering: 'pixelated',
+                        // eslint-disable-next-line no-dupe-keys
                     imageRendering: '-moz-crisp-edges',
+                        // eslint-disable-next-line no-dupe-keys
                     imageRendering: 'crisp-edges'}} />
                 </button>
     );
