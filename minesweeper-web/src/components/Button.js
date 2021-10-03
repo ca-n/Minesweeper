@@ -16,18 +16,19 @@ const Button = ({image='none', background, onLeftClick=(() => {}), onRightClick=
         <button type={'button'}
                 style={{backgroundColor:background,
                     borderStyle:`${inset ? 'inset' : 'outset'}`,
-                    height:'32px',
-                    width:'32px',
                     textAlign:'center',
                     margin: '0',
-                    padding: '0'}}
+                    padding: '0',
+                    height: '38px',
+                    width: '38px'}}
                 onClick={onClick}
                 onContextMenu={onContextMenu}>
                     <img alt={image} src={loadImage(image)}
                     style={{margin: '0',
                     padding: '0',
-                    height: '100%',
-                    width: '100%',
+                    height: '32px',
+                    width: '32px',
+                        backgroundColor: background,
                         // eslint-disable-next-line no-dupe-keys
                     imageRendering: 'pixelated',
                         // eslint-disable-next-line no-dupe-keys
