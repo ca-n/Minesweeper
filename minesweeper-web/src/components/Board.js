@@ -7,7 +7,6 @@ import Empty from "./cells/Empty";
 
 const Board = ({gameState, onClick, onFlag}) => {
     const generateTable = () => {
-        console.log("generateTable(), state=" + JSON.stringify(gameState));
         let table = [];
         for (let y = 0; y < gameState.rows; y++) {
             let row = [];
