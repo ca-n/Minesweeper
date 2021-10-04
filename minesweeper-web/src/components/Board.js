@@ -63,11 +63,9 @@ const Board = ({gameState, onClick, onFlag}) => {
     }
 
     return (
-        <div>
-            <table cellSpacing={'0'}>
-                <tbody style={{margin: '0', padding: '0'}}>{generateTable()}</tbody>
-            </table>
-        </div>
+        <table cellSpacing={'0'} style={{margin: '0 auto'}}>
+            <tbody style={{margin: '0', padding: '0'}}>{generateTable()}</tbody>
+        </table>
     )
 }
 
