@@ -1,10 +1,20 @@
-import React from 'react'
-import {useState, useEffect} from "react";
+import React, {useEffect, useState} from 'react'
 import Board from "./Board";
 
 const Minesweeper = ({cols, rows, mines}) => {
 
     const [seconds, setSeconds] = useState(0);
+
+    const generateInitialGameState = () => {
+        return {
+            board: initializeArray2D(cols, rows),
+            cols: cols,
+            rows: rows,
+            state: 0,
+            minesRemaining: mines,
+            emptyRemaining: (cols * rows) - mines
+        }
+    }
 
     const initializeArray2D = (cols, rows) => {
         let array = new Array(cols);
@@ -24,16 +34,7 @@ const Minesweeper = ({cols, rows, mines}) => {
      0: Pregame (First move)
      1: In game
     */
-    const [gameState, setGameState] = useState(
-        {
-            board: initializeArray2D(cols, rows),
-            cols: cols,
-            rows: rows,
-            state: 0,
-            minesRemaining: mines,
-            emptyRemaining: (cols * rows) - mines
-        }
-    )
+    const [gameState, setGameState] = useState(generateInitialGameState());
 
     let board = gameState.board;
     let state = gameState.state;
@@ -186,10 +187,15 @@ const Minesweeper = ({cols, rows, mines}) => {
     }
 
     const gameWon = () => {
-        console.log("Game WON");
+        minesRemaining = 0;
         //TODO: stop timer
         // state = win
         state = -1;
+    }
+
+    const reset = () => {
+        setSeconds(0);
+        setGameState(generateInitialGameState());
     }
 
     const updateGameState = () => {
@@ -214,21 +220,16 @@ const Minesweeper = ({cols, rows, mines}) => {
     }, [state]);
 
     return (
-        <table style={{width: '50%'}}>
-        <tbody>
-            <tr>
-                <td style={{width: '50%', textAlign: 'left'}}>{mines}</td>
-                <td style={{width: '50%', textAlign: 'right'}}>{seconds}</td>
-            </tr>
-            <tr>
-                <td colSpan={2}>
-                    <Board gameState={gameState}
-                   onClick={onClick}
-                       onFlag={onFlag} />
-                </td>
-            </tr>
-        </tbody>
-        </table>
+        <div style={{margin: '0 auto', borderStyle: 'outset', backgroundColor: 'lightgray', display: 'inline-block', padding: '10px'}}>
+            <div style={{display: 'inline-block', verticalAlign: 'top', borderStyle: 'inset', backgroundColor: 'silver', width: '100%', marginBottom: '10px', boxSizing: 'border-box'}}>
+                <span style={{float: 'left', textAlign: 'left', backgroundColor: '#400000', color: 'red', fontWeight: 'bold', padding: '5px'}}>{minesRemaining} Mines</span>
+                {state < 0 ? <span>{state === -1 ? 'Well Done! ' : (state === -2) ? 'BOOM! ' : ''}<button onClick={reset}>Reset</button></span> : ''}
+                <span style={{float: 'right', textAlign: 'right', backgroundColor: '#400000', color: 'red', fontWeight: 'bold', padding: '5px'}}>Time {seconds}</span>
+            </div>
+            <div style={{borderStyle: 'inset'}}>
+                <Board gameState={gameState} onClick={onClick} onFlag={onFlag} />
+            </div>
+        </div>
     )
 }
 
