@@ -180,7 +180,6 @@ const Minesweeper = ({cols, rows, mines}) => {
     }
 
     const gameLost = (x, y) => {
-        //TODO: stop timer
         // state = loss
         board[x][y] = '%';
         state = -2;
@@ -188,7 +187,6 @@ const Minesweeper = ({cols, rows, mines}) => {
 
     const gameWon = () => {
         minesRemaining = 0;
-        //TODO: stop timer
         // state = win
         state = -1;
     }
@@ -220,13 +218,13 @@ const Minesweeper = ({cols, rows, mines}) => {
     }, [state]);
 
     return (
-        <div style={{margin: '0 auto', borderStyle: 'outset', backgroundColor: 'lightgray', display: 'inline-block', padding: '10px'}}>
-            <div style={{display: 'inline-block', verticalAlign: 'top', borderStyle: 'inset', backgroundColor: 'silver', width: '100%', marginBottom: '10px', boxSizing: 'border-box'}}>
-                <span style={{float: 'left', textAlign: 'left', backgroundColor: '#400000', color: 'red', fontWeight: 'bold', padding: '5px'}}>{minesRemaining} Mines</span>
-                {state < 0 ? <span>{state === -1 ? 'Well Done! ' : (state === -2) ? 'BOOM! ' : ''}<button onClick={reset}>Reset</button></span> : ''}
-                <span style={{float: 'right', textAlign: 'right', backgroundColor: '#400000', color: 'red', fontWeight: 'bold', padding: '5px'}}>Time {seconds}</span>
+        <div className='outset minesweeper'>
+            <div className='inset mineheader'>
+                <span className='left display'>{minesRemaining} Mines</span>
+                {state < 0 ? <span className='between'>{state === -1 ? 'Well Done! ' : (state === -2) ? 'BOOM! ' : ''}<button onClick={reset}>Reset</button></span> : ''}
+                <span className='right display'>Time {seconds}</span>
             </div>
-            <div style={{borderStyle: 'inset'}}>
+            <div className='inset'>
                 <Board gameState={gameState} onClick={onClick} onFlag={onFlag} />
             </div>
         </div>

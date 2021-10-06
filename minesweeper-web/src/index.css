@@ -11,3 +11,52 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.outset {
+  border-style: outset;
+  background-color: lightgray;
+}
+
+.inset {
+  border-style: inset;
+  background-color: silver;
+}
+
+.minesweeper {
+  margin: 0 auto;
+  display: inline-block;
+  padding: 10px;
+}
+
+.mineheader {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.left {
+  float: left;
+  text-align: left;
+}
+
+.right {
+  float: right;
+  text-align: right;
+}
+
+.display {
+  background-color: #400000;
+  color: red;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.between {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
